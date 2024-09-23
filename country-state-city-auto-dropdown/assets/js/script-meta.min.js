@@ -1,0 +1,1 @@
+jQuery(function($){$meta=tc_csca_auto_ajax_meta.csca_metabox;$("#informationdiv.postbox").after($meta);});

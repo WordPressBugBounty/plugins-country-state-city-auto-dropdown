@@ -1,0 +1,99 @@
+# Translation of Plugins - Country State City Dropdown CF7 - Stable (latest release) in Spanish (Spain)
+# This file is distributed under the same license as the Plugins - Country State City Dropdown CF7 - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-11-06 05:35:53+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/3.0.0-alpha.2\n"
+"Language: es\n"
+"Project-Id-Version: Plugins - Country State City Dropdown CF7 - Stable (latest release)\n"
+
+#: country-state-city-dropdown-cf7.php:205
+msgid "Buy Pro"
+msgstr "Comprar la versión Pro"
+
+#: country-state-city-dropdown-cf7.php:205
+msgid "Plugin Additional Links"
+msgstr "Enlaces adicionales del plugin"
+
+#. Author URI of the plugin
+msgid "http://trustyplugins.com"
+msgstr "https://trustyplugins.com"
+
+#. Author of the plugin
+msgid "Trusty Plugins"
+msgstr "Trusty Plugins"
+
+#. Plugin Name of the plugin
+msgid "Country State City Dropdown CF7"
+msgstr "Country State City Dropdown CF7"
+
+#: includes/country-dropdown.php:86
+msgid "Text Fields"
+msgstr "Campos de texto"
+
+#: includes/country-dropdown.php:86
+msgid "https://contactform7.com/text-fields/"
+msgstr "https://contactform7.com/text-fields/"
+
+#: includes/country-dropdown.php:76
+msgid "country drop-down"
+msgstr "desplegable de países"
+
+#: includes/city-dropdown.php:77
+msgid "city drop-down"
+msgstr "desplegable de ciudades"
+
+#: includes/country-dropdown.php:134 includes/city-dropdown.php:128
+#: includes/state-dropdown.php:133
+msgid "To use the value input through this field in a mail field, you need to insert the corresponding mail-tag (%s) into the field on the Mail tab."
+msgstr "Para usar el valor introducido a través de este campo en un campo de correo, tienes que insertar en el campo la correspondiente etiqueta de correo (%s) en la pestaña de correo."
+
+#: includes/country-dropdown.php:129 includes/city-dropdown.php:123
+#: includes/state-dropdown.php:128
+msgid "Insert Tag"
+msgstr "Insertar una etiqueta"
+
+#: includes/country-dropdown.php:116 includes/city-dropdown.php:110
+#: includes/state-dropdown.php:115
+msgid "Class attribute"
+msgstr "Atributo de clase"
+
+#: includes/country-dropdown.php:111 includes/city-dropdown.php:105
+#: includes/state-dropdown.php:110
+msgid "Id attribute"
+msgstr "Atributo de ID"
+
+#: includes/country-dropdown.php:106 includes/city-dropdown.php:99
+#: includes/state-dropdown.php:104
+msgid "Name"
+msgstr "Nombre"
+
+#: includes/country-dropdown.php:100 includes/state-dropdown.php:98
+msgid "Required field"
+msgstr "Campo obligatorio"
+
+#: includes/country-dropdown.php:96 includes/country-dropdown.php:99
+#: includes/state-dropdown.php:94 includes/state-dropdown.php:97
+msgid "Field type"
+msgstr "Tipo de campo"
+
+#: includes/country-dropdown.php:85 includes/city-dropdown.php:85
+#: includes/state-dropdown.php:84
+msgid "Generate a form-tag for a country dorp list with flags icon text input field."
+msgstr "Genera una etiqueta de formulario para una lista desplegable de países con un campo de entrada de texto de iconos de banderas."
+
+#: includes/state-dropdown.php:76
+msgid "state drop-down"
+msgstr "desplegable de provincias"
+
+#: country-state-city-dropdown-cf7.php:82
+msgid "The %1$sCountry State City Dropdown CF7%2$s plugin requires %1$sContact form 7%2$s plugin active to run properly. Please install %1$scontact form 7%2$s and activate"
+msgstr "Para ejecutarse correctamente, el plugin %1$sCountry State City Dropdown CF7%2$s necesita que esté activo el plugin %1$sContact Form 7%2$s. Por favor, instala y activa %1$sContact Form 7%2$s"
+
+#. Description of the plugin
+msgid "Add country, state and city auto drop down for CONTACT FORM 7. State will auto populate in SELECT field according to selected country and city will auto populate according to selected state."
+msgstr "Añade menús desplegables automáticos de países, provincias y ciudades en Contact Form 7. La provincia se rellenará automáticamente en un campo de selección según el país seleccionado y la ciudad se rellenará automáticamente según la provincia seleccionada."

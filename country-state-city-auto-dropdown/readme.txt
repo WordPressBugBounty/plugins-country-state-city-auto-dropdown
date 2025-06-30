@@ -3,8 +3,8 @@ Contributors: TrustyPlugins
 Donate link: https://trustyplugins.com/
 Tags: country dropdown,states,contact form 7,forms,cities
 Requires at least: 4.8
-Tested up to: 6.5
-Stable tag: 2.7.4
+Tested up to: 6.8
+Stable tag: 2.7.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,6 +78,10 @@ All Cities will display automatically according to selected country and state fr
 2. screenshot-2.png
 3. screenshot-3.png
 
+
+== Changelog ==
+= 2.7.5 =
+* Validation error issue has been fixed.
 
 == Changelog ==
 = 2.7.4 =

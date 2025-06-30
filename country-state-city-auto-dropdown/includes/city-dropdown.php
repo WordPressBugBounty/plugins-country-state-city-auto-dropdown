@@ -39,7 +39,7 @@ function tc_csca_city_auto_form_tag_handler($tag)
     $cnt_tag = wpcf7_scan_form_tags(array('type' => array('country_auto*', 'country_auto')));
     $st_tag = wpcf7_scan_form_tags(array('type' => array('state_auto*', 'state_auto')));
     if ($cnt_tag && $st_tag) {
-        $html = '<span class="wpcf7-form-control-wrap city_auto ' . $tag->name . '">';
+        $html = '<span class="wpcf7-form-control-wrap city_auto ' . $tag->name . '" data-name="'.$tag->name.'">';
         $html .= '<select ' . $atts . ' >';
         $html .= '<option value="0" data-id="0">Select City</option>';
         $html .= '</select></span>';

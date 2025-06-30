@@ -38,7 +38,7 @@ function tc_csca_state_auto_form_tag_handler($tag)
     $atts = wpcf7_format_atts($atts);
     $cnt_tag = wpcf7_scan_form_tags(array('type' => array('country_auto*', 'country_auto')));
     if ($cnt_tag) {
-        $html = '<span class="wpcf7-form-control-wrap state_auto ' . $tag->name . '">';
+        $html = '<span class="wpcf7-form-control-wrap state_auto ' . $tag->name . '" data-name="'.$tag->name.'">';
         $html .= '<select ' . $atts . ' >';
         $html .= '<option value="0" data-id="0">Select State</option>';
         $html .= '</select></span>';

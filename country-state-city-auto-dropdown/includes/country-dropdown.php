@@ -37,7 +37,7 @@ function tc_csca_country_auto_form_tag_handler($tag)
     $atts['name'] = $tag->name;
     $atts = wpcf7_format_atts($atts);
 
-    $html = '<span class="wpcf7-form-control-wrap country_auto ' . $tag->name . '">';
+    $html = '<span class="wpcf7-form-control-wrap country_auto ' . $tag->name . '" data-name="'.$tag->name.'">';
     $html .= '<select ' . $atts . ' >';
     $html .= '<option value="0" data-id="0" >Select Country</option>';
     global $wpdb;

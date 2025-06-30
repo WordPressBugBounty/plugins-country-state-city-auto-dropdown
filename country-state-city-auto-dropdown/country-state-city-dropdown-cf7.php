@@ -2,7 +2,7 @@
 /*
 Plugin Name: Country State City Dropdown CF7
 Description: Add country, state and city auto drop down for CONTACT FORM 7. State will auto populate in SELECT field according to selected country and city will auto populate according to selected state.
-Version: 2.7.5
+Version: 2.7.6
 Author: Trusty Plugins
 Author URI: https://trustyplugins.com
 License: GPL3

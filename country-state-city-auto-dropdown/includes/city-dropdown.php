@@ -68,64 +68,79 @@ function tc_csca_city_auto_validation_filter($result, $tag)
 
 /* Tag generator */
 
-add_action('wpcf7_admin_init', 'tc_csca_add_tag_generator_city_auto', 20);
+add_action('wpcf7_admin_init', 'tc_csca_add_tag_generator_city_auto', 25,0);
 
 function tc_csca_add_tag_generator_city_auto()
 {
     $tag_generator = WPCF7_TagGenerator::get_instance();
     $tag_generator->add('city_auto', __('city drop-down', 'tc_csca'),
-        'tc_csca_tag_generator_city_auto');
+        'tc_csca_tag_generator_city_auto',array('version' => '2'));
 }
 
-function tc_csca_tag_generator_city_auto($contact_form, $args = '')
+function tc_csca_tag_generator_city_auto($contact_form, $options)
 {
-    $args = wp_parse_args($args, array());
-    $type = 'city_auto';
+    $field_types = array(
+		'city_auto' => array(
+			'display_name' => __( 'City Dropdown', 'tc_csca' ),
+			'heading' => __( 'City Dropdown form-tag generator', 'tc_csca' ),
+			'description' => __( 'Generates a form-tag for a <a href="https://trustyplugins.com/">city dropdown</a>.', 'tc_csca' ),
+		),
+	);
 
-    $description = __("Generate a form-tag for a country dorp list with flags icon text input field.", 'tc_csca');
+	$tgg = new WPCF7_TagGeneratorGenerator( $options['content'] );
 
-    //$desc_link = wpcf7_link( __( 'https://contactform7.com/text-fields/', 'tc_csca' ), __( 'Text Fields', 'tc_csca' ) );
-    $desc_link = '';
-    ?>
-<div class="control-box">
-<fieldset>
-<legend><?php echo sprintf(esc_html($description), esc_html($desc_link)); ?></legend>
+	$formatter = new WPCF7_HTMLFormatter();
 
-<table class="form-table">
-<tbody>
+	$formatter->append_start_tag( 'header', array(
+		'class' => 'description-box',
+	) );
 
+	$formatter->append_start_tag( 'h3' );
 
-	<tr>
-	<th scope="row"><label for="<?php echo esc_attr($args['content'] . '-name'); ?>"><?php echo esc_html(__('Name', 'tc_csca')); ?></label></th>
-	<td><input type="text" name="name" class="tg-name oneline" id="<?php echo esc_attr($args['content'] . '-name'); ?>" /></td>
-	</tr>
+	$formatter->append_preformatted(
+		esc_html( $field_types['city_auto']['heading'] )
+	);
 
+	$formatter->end_tag( 'h3' );
 
-	<tr>
-	<th scope="row"><label for="<?php echo esc_attr($args['content'] . '-id'); ?>"><?php echo esc_html(__('Id attribute', 'tc_csca')); ?></label></th>
-	<td><input type="text" name="id" class="idvalue oneline option" id="<?php echo esc_attr($args['content'] . '-id'); ?>" /></td>
-	</tr>
+	$formatter->append_start_tag( 'p' );
 
-	<tr>
-	<th scope="row"><label for="<?php echo esc_attr($args['content'] . '-class'); ?>"><?php echo esc_html(__('Class attribute', 'tc_csca')); ?></label></th>
-	<td><input type="text" name="class" class="classvalue oneline option" id="<?php echo esc_attr($args['content'] . '-class'); ?>" /></td>
-	</tr>
+	$formatter->append_preformatted(
+		wp_kses_data( $field_types['city_auto']['description'] )
+	);
 
-</tbody>
-</table>
-</fieldset>
-</div>
+	$formatter->end_tag( 'header' );
 
-<div class="insert-box">
-	<input type="text" name="<?php echo esc_html($type); ?>" class="tag code" onfocus="this.select()" />
+	$formatter->append_start_tag( 'div', array(
+		'class' => 'control-box',
+	) );
 
-	<div class="submitbox">
-	<input type="button" class="button button-primary insert-tag" value="<?php echo esc_attr(__('Insert Tag', 'tc_csca')); ?>" />
-	</div>
+	$formatter->call_user_func( static function () use ( $tgg, $field_types ) {
+		$tgg->print( 'field_type', array(
+			'with_required' => true,
+			'select_options' => array(
+				'city_auto' => $field_types['city_auto']['display_name'],
+			),
+		) );
 
-	<br class="clear" />
-    <?php /* translators: %s is replaced with "string" */  ?>
-	<p class="description mail-tag"><label for="<?php echo esc_attr($args['content'] . '-mailtag'); ?>"><?php echo sprintf(esc_html(__("To use the value input through this field in a mail field, you need to insert the corresponding mail-tag (%s) into the field on the Mail tab.", 'tc_csca')), '<strong><span class="mail-tag"></span></strong>'); ?><input type="text" class="mail-tag code hidden" readonly="readonly" id="<?php echo esc_attr($args['content'] . '-mailtag'); ?>" /></label></p>
-</div>
-<?php
+		$tgg->print( 'field_name' );
+
+		$tgg->print( 'class_attr' );
+
+	
+	} );
+
+	$formatter->end_tag( 'div' );
+
+	$formatter->append_start_tag( 'footer', array(
+		'class' => 'insert-box',
+	) );
+
+	$formatter->call_user_func( static function () use ( $tgg, $field_types ) {
+		$tgg->print( 'insert_box_content' );
+
+		$tgg->print( 'mail_tag_tip' );
+	} );
+
+	$formatter->print();
 }

@@ -4,7 +4,7 @@ Donate link: https://trustyplugins.com/
 Tags: country dropdown,states,contact form 7,forms,cities
 Requires at least: 4.8
 Tested up to: 6.8
-Stable tag: 2.7.5
+Stable tag: 2.7.6
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -80,6 +80,10 @@ All Cities will display automatically according to selected country and state fr
 
 
 == Changelog ==
+= 2.7.6 =
+* Form Tag generator upgraded to version 2 [contact form 7]
+
+
 = 2.7.5 =
 * Validation error issue has been fixed.
 

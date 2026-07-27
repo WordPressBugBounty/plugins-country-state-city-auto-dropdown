@@ -4,7 +4,7 @@ Donate link: https://trustyplugins.com/
 Tags: country dropdown,states,contact form 7,forms,cities
 Requires at least: 4.8
 Tested up to: 6.8
-Stable tag: 2.7.6
+Stable tag: 2.8.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -41,12 +41,18 @@ How to add the fields in the contact form 7
 1.) Once you have installed, activated the Country State City Auto Dropdown plugin.
 2.) Add the form-tag  "country drop-down" and  "state dropdown" and "city dropdown"  to your form and save the changes.
 
+Optional: if you use two location sets in one form, add the same group option on each tag, e.g. [country_auto* country-shipping group:shipping].
+
+City is optional — country + state only works if you omit the city drop-down tag.
+
+Use the tag generator to set a custom placeholder (enter text and check “Use this text as the placeholder”).
+
 Requirments:
 * Contact form 7 must be active plugin.
 
 = Recommended Plugins =
 The following plugin is recommended :
-* [Contact form 7](https://wordpress.org/plugins/contact-form-7/) by takayukister – With Conact form 7, you can use this plugin. Without contact form 7 this plugin have no needs.
+* [Contact Form 7](https://wordpress.org/plugins/contact-form-7/) by takayukister – With Conact Form 7, you can use this plugin. Without contact form 7 this plugin have no needs.
 
 == Installation ==
 
@@ -61,7 +67,7 @@ You will find three new field types in your contact form 7 field list.
 
 = How to set preferred countries list? =
 
-All countries will display automatically.
+All countries display in the free version. Filtering countries, default country, and IP detection are available in the PRO version.
 
 = How to set State list? =
 
@@ -70,6 +76,14 @@ All States will display automatically according to selected country from dropdow
 = How to set City list? =
 
 All Cities will display automatically according to selected country and state from dropdown field.
+
+= Will updating delete my data? =
+
+No. Updates keep your existing country/state/city tables and form tags. Settings → Country State City Dropdown shows data health and optional repair tools.
+
+= Dropdowns are empty after install =
+
+Go to Settings → Country State City Dropdown and use “Install missing data”. Use Force reinstall only if data is corrupted.
 
 
 == Screenshots ==
@@ -80,26 +94,34 @@ All Cities will display automatically according to selected country and state fr
 
 
 == Changelog ==
+= 2.8.0 =
+* Safer upgrades for existing sites: never re-seeds or renames tables when data already exists
+* Adds database indexes for faster state/city AJAX
+* Loads front-end script only when Contact Form 7 is present (filter to force legacy all-pages load)
+* Translatable placeholders and validation messages
+* Optional group:xxx tag option + smarter pairing for multiple location fields
+* Settings page: data health, install missing data, softer Pro link
+* Security/hardening: fixed SQL prepare usage, capability checks, sanitization
+* Client-side AJAX cache for states/cities (faster when revisiting a country)
+* Disabled + loading states on dependent dropdowns (aria-busy)
+* Tag generator: placeholder, ID, class, and group fields
+* Documented country + state only mode (city tag optional)
+* Custom placeholders via CF7 placeholder option
+
 = 2.7.6 =
 * Form Tag generator upgraded to version 2 [contact form 7]
-
 
 = 2.7.5 =
 * Validation error issue has been fixed.
 
-== Changelog ==
 = 2.7.4 =
 * State, City List not appending (Issue Fixed)
-
 
 = 2.7.3 =
 * Plugin vulnerability Fixed
 
-
-== Changelog ==
 = 2.7.2 =
-*  vulnerability Fixed
-
+* vulnerability Fixed
 
 = 2.7.1 =
 * ABSPATH function added to files
@@ -135,4 +157,5 @@ All Cities will display automatically according to selected country and state fr
 * First version of plugin.
 
 == Upgrade Notice ==
-Added Plugin Support
+= 2.8.0 =
+Safe upgrade for existing users: keeps your location data and form tags. Adds indexes, AJAX cache, loading states, custom placeholders, and a data health screen under Settings.

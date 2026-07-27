@@ -1,0 +1,5 @@
+select.state_auto[disabled],
+select.city_auto[disabled] {
+	opacity: 0.65;
+	cursor: not-allowed;
+}

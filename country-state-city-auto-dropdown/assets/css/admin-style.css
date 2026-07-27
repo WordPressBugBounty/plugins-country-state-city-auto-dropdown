@@ -38,3 +38,19 @@ select#patch {
   background: #f7f7f7;
   margin-top: 10px;
 }
+.tc-csca-settings .tc-patch-main + .tc-patch-main {
+  margin-top: 16px;
+}
+.tc-csca-ok {
+  color: #008a20;
+  font-weight: 600;
+  margin-left: 8px;
+}
+.tc-csca-bad {
+  color: #b32d2e;
+  font-weight: 600;
+  margin-left: 8px;
+}
+.tc-csca-settings .button {
+  margin-right: 8px;
+}

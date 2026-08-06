@@ -1,7 +1,7 @@
 <?php
 /**
  * Database helpers — safe for existing installs.
- * Never renames tables or re-seeds when data already exists.
+ * Never renames tables. Data refresh uses explicit/versioned reseed.
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -9,7 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class TC_CSCA_DB {
 
-	const DB_VERSION = '2.8.0';
+	const DB_VERSION   = '2.8.1';
+	const DATA_VERSION = '2026.07.1';
 
 	/**
 	 * Table names (unchanged for backward compatibility).
@@ -30,21 +31,28 @@ class TC_CSCA_DB {
 	 */
 	public static function maybe_upgrade() {
 		$installed = get_option( 'tc_auto_plugin_version', '0' );
-		if ( version_compare( (string) $installed, self::DB_VERSION, '>=' ) ) {
-			return;
+		if ( version_compare( (string) $installed, self::DB_VERSION, '<' ) ) {
+			self::create_tables();
+			self::ensure_indexes();
+
+			$counts = self::get_counts();
+			if ( 0 === (int) $counts['countries'] ) {
+				self::seed_data();
+				update_option( 'tc_csca_data_version', self::DATA_VERSION );
+			}
+
+			update_option( 'tc_auto_plugin_version', self::DB_VERSION );
+			update_option( 'tc_auto_plugin', 'activated' );
 		}
 
 		self::create_tables();
 		self::ensure_indexes();
 
-		// Never re-seed if rows already exist (protects live sites).
-		$counts = self::get_counts();
-		if ( 0 === (int) $counts['countries'] ) {
-			self::seed_data();
+		// Flag outdated geography packs (do not auto-wipe custom/live DBs).
+		$data_ver = get_option( 'tc_csca_data_version', '' );
+		if ( $data_ver !== self::DATA_VERSION && self::is_healthy() ) {
+			update_option( 'tc_csca_data_update_available', '1' );
 		}
-
-		update_option( 'tc_auto_plugin_version', self::DB_VERSION );
-		update_option( 'tc_auto_plugin', 'activated' );
 	}
 
 	/**
@@ -87,9 +95,7 @@ class TC_CSCA_DB {
 	 * Add indexes on existing installs if missing (non-destructive).
 	 */
 	public static function ensure_indexes() {
-		global $wpdb;
 		$t = self::tables();
-
 		self::maybe_add_index( $t['state'], 'country_id', 'country_id' );
 		self::maybe_add_index( $t['city'], 'state_id', 'state_id' );
 	}
@@ -113,6 +119,13 @@ class TC_CSCA_DB {
 	}
 
 	/**
+	 * Whether geography pack is current.
+	 */
+	public static function is_data_current() {
+		return get_option( 'tc_csca_data_version', '' ) === self::DATA_VERSION;
+	}
+
+	/**
 	 * Seed location data only when countries table is empty.
 	 *
 	 * @return bool True if seed ran.
@@ -126,6 +139,43 @@ class TC_CSCA_DB {
 			return false;
 		}
 
+		self::run_seed_inserts();
+		update_option( 'tc_csca_data_version', self::DATA_VERSION );
+		delete_option( 'tc_csca_data_update_available' );
+		return true;
+	}
+
+	/**
+	 * Wipe and reload full geography pack (admin-confirmed).
+	 *
+	 * @return bool
+	 */
+	public static function reseed_all() {
+		global $wpdb;
+		$t = self::tables();
+
+		self::create_tables();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "TRUNCATE TABLE {$t['city']}" );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "TRUNCATE TABLE {$t['state']}" );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "TRUNCATE TABLE {$t['countries']}" );
+
+		self::ensure_indexes();
+		self::run_seed_inserts();
+		update_option( 'tc_csca_data_version', self::DATA_VERSION );
+		delete_option( 'tc_csca_data_update_available' );
+		return true;
+	}
+
+	/**
+	 * Execute INSERT packs from includes/*-sql.php.
+	 */
+	private static function run_seed_inserts() {
+		global $wpdb;
+		$t = self::tables();
+
 		$table_country = $t['countries'];
 		$table_state   = $t['state'];
 		$table_city    = $t['city'];
@@ -134,24 +184,21 @@ class TC_CSCA_DB {
 		include TC_CSCA_PATH . 'includes/states-sql.php';
 		include TC_CSCA_PATH . 'includes/cities-sql.php';
 
-		// Use query() for INSERTs — dbDelta is for schema only.
 		if ( ! empty( $country_insert ) ) {
 			$wpdb->query( $country_insert ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 		if ( ! empty( $state_insert ) ) {
 			$wpdb->query( $state_insert ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
-		foreach ( array( 'city_insert', 'city_insert1', 'city_insert2', 'city_insert3', 'city_insert4' ) as $var ) {
+		foreach ( array( 'city_insert', 'city_insert1', 'city_insert2', 'city_insert3', 'city_insert4', 'city_insert5', 'city_insert6' ) as $var ) {
 			if ( ! empty( $$var ) ) {
 				$wpdb->query( $$var ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			}
 		}
-
-		return true;
 	}
 
 	/**
-	 * @return array{countries:int,state:int,city:int,ok:bool}
+	 * @return array{countries:int,state:int,city:int,ok:bool,data_version:string,data_current:bool}
 	 */
 	public static function get_counts() {
 		global $wpdb;
@@ -160,15 +207,15 @@ class TC_CSCA_DB {
 		$countries = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t['countries']}" );
 		$state     = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t['state']}" );
 		$city      = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t['city']}" );
-
-		// Healthy enough for cascading dropdowns.
-		$ok = ( $countries > 0 && $state > 0 && $city > 0 );
+		$ok        = ( $countries > 0 && $state > 0 && $city > 0 );
 
 		return array(
-			'countries' => $countries,
-			'state'     => $state,
-			'city'      => $city,
-			'ok'        => $ok,
+			'countries'    => $countries,
+			'state'        => $state,
+			'city'         => $city,
+			'ok'           => $ok,
+			'data_version' => (string) get_option( 'tc_csca_data_version', '' ),
+			'data_current' => self::is_data_current(),
 		);
 	}
 

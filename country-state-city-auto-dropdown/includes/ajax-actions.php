@@ -73,41 +73,42 @@ function tc_csca_reinstall_data() {
 		);
 	}
 
-	$force = ! empty( $_POST['force'] );
+	$force         = ! empty( $_POST['force'] );
+	$update_pack   = ! empty( $_POST['update_pack'] );
+	$data_outdated = ! TC_CSCA_DB::is_data_current();
 
-	if ( ! $force && TC_CSCA_DB::is_healthy() ) {
+	// Safe path: only seed empty DBs unless force/update_pack.
+	if ( ! $force && ! $update_pack && TC_CSCA_DB::is_healthy() && ! $data_outdated ) {
 		wp_send_json(
 			array(
 				'status'  => 200,
-				'message' => __( 'Location data already looks complete. Nothing was changed. Use “Force reinstall” only if lists are wrong.', 'tc_csca' ),
+				'message' => __( 'Location data already looks complete. Nothing was changed. Use “Force reinstall” or “Update to latest dataset” if lists are wrong/outdated.', 'tc_csca' ),
 			)
 		);
 	}
 
-	if ( $force ) {
-		global $wpdb;
-		$t = TC_CSCA_DB::tables();
-		// Truncate then reseed — only when admin opts in.
-		$wpdb->query( "TRUNCATE TABLE {$t['city']}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$wpdb->query( "TRUNCATE TABLE {$t['state']}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$wpdb->query( "TRUNCATE TABLE {$t['countries']}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	if ( $force || $update_pack || $data_outdated ) {
+		TC_CSCA_DB::reseed_all();
+		$ran = true;
+	} else {
+		TC_CSCA_DB::create_tables();
+		TC_CSCA_DB::ensure_indexes();
+		$ran = TC_CSCA_DB::seed_data();
 	}
 
-	TC_CSCA_DB::create_tables();
-	TC_CSCA_DB::ensure_indexes();
-	$ran = TC_CSCA_DB::seed_data();
 	$counts = TC_CSCA_DB::get_counts();
 
 	wp_send_json(
 		array(
 			'status'  => 200,
-			'message' => $ran || $force
+			'message' => $ran
 				? sprintf(
-					/* translators: 1: countries 2: states 3: cities */
-					__( 'Data installed. Countries: %1$d, States: %2$d, Cities: %3$d.', 'tc_csca' ),
+					/* translators: 1: countries 2: states 3: cities 4: data version */
+					__( 'Location data ready (v%4$s). Countries: %1$d, States: %2$d, Cities: %3$d.', 'tc_csca' ),
 					$counts['countries'],
 					$counts['state'],
-					$counts['city']
+					$counts['city'],
+					TC_CSCA_DB::DATA_VERSION
 				)
 				: __( 'Countries table was not empty, so existing data was kept. Use Force reinstall to replace it.', 'tc_csca' ),
 			'counts'  => $counts,

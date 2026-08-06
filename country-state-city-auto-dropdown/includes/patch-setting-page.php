@@ -1,7 +1,6 @@
 <?php
 /**
- * Settings: data health, optional reinstall, legacy India patches.
- * Existing users: patches remain; reinstall never wipes without Force.
+ * Settings: data health, dataset update, optional legacy India patches.
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -24,11 +23,14 @@ function tc_csca_patch_options_page() {
 	}
 
 	$counts = class_exists( 'TC_CSCA_DB' ) ? TC_CSCA_DB::get_counts() : array(
-		'countries' => 0,
-		'state'     => 0,
-		'city'      => 0,
-		'ok'        => false,
+		'countries'    => 0,
+		'state'        => 0,
+		'city'         => 0,
+		'ok'           => false,
+		'data_version' => '',
+		'data_current' => false,
 	);
+	$data_ver = ! empty( $counts['data_version'] ) ? $counts['data_version'] : '—';
 	?>
 	<div class="wrap tc-csca-settings">
 		<h1><?php echo esc_html__( 'Country State City Dropdown', 'tc_csca' ); ?></h1>
@@ -39,26 +41,32 @@ function tc_csca_patch_options_page() {
 				<?php
 				echo esc_html(
 					sprintf(
-						/* translators: 1: countries 2: states 3: cities */
-						__( 'Countries: %1$d · States: %2$d · Cities: %3$d', 'tc_csca' ),
+						/* translators: 1: countries 2: states 3: cities 4: data version */
+						__( 'Countries: %1$d · States: %2$d · Cities: %3$d · Dataset: %4$s', 'tc_csca' ),
 						(int) $counts['countries'],
 						(int) $counts['state'],
-						(int) $counts['city']
+						(int) $counts['city'],
+						$data_ver
 					)
 				);
 				?>
-				<?php if ( ! empty( $counts['ok'] ) ) : ?>
-					<span class="tc-csca-ok"><?php echo esc_html__( 'OK', 'tc_csca' ); ?></span>
+				<?php if ( ! empty( $counts['data_current'] ) ) : ?>
+					<span class="tc-csca-ok"><?php echo esc_html__( 'Latest', 'tc_csca' ); ?></span>
+				<?php elseif ( ! empty( $counts['ok'] ) ) : ?>
+					<span class="tc-csca-bad"><?php echo esc_html__( 'Update available', 'tc_csca' ); ?></span>
 				<?php else : ?>
 					<span class="tc-csca-bad"><?php echo esc_html__( 'Incomplete — forms may show empty lists.', 'tc_csca' ); ?></span>
 				<?php endif; ?>
 			</p>
 			<p class="description">
-				<?php echo esc_html__( 'Updating the plugin never deletes your location tables. Use “Install missing data” only if counts are zero. “Force reinstall” wipes and reloads the default dataset — use only if lists are corrupted.', 'tc_csca' ); ?>
+				<?php echo esc_html__( 'Dataset source: countries-states-cities (dr5hn), refreshed July 2026. Updating the plugin never auto-deletes your tables. Use “Update to latest dataset” or “Force reinstall” to load the new world list (replaces countries/states/cities rows).', 'tc_csca' ); ?>
 			</p>
 			<p class="patch-button">
-				<button type="button" id="tc-csca-install-data" class="button button-primary">
+				<button type="button" id="tc-csca-install-data" class="button">
 					<?php echo esc_html__( 'Install missing data', 'tc_csca' ); ?>
+				</button>
+				<button type="button" id="tc-csca-update-pack" class="button button-primary">
+					<?php echo esc_html__( 'Update to latest dataset', 'tc_csca' ); ?>
 				</button>
 				<button type="button" id="tc-csca-force-reinstall" class="button">
 					<?php echo esc_html__( 'Force reinstall', 'tc_csca' ); ?>
@@ -68,9 +76,9 @@ function tc_csca_patch_options_page() {
 		</div>
 
 		<div class="tc-patch-main">
-			<h2><?php echo esc_html__( 'Regional patches', 'tc_csca' ); ?></h2>
+			<h2><?php echo esc_html__( 'Regional patches (legacy)', 'tc_csca' ); ?></h2>
 			<p class="description">
-				<?php echo esc_html__( 'Optional fixes for specific missing regions. Safe to run more than once.', 'tc_csca' ); ?>
+				<?php echo esc_html__( 'West Bengal and Ladakh are included in the July 2026 dataset. These patches are only needed on very old installs that have not updated data yet.', 'tc_csca' ); ?>
 			</p>
 			<?php
 			$obj = array(

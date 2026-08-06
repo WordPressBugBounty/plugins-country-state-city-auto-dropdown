@@ -2,11 +2,11 @@
 /*
 Plugin Name: Country State City Dropdown CF7
 Description: Add country, state and city auto drop down for CONTACT FORM 7. State will auto populate in SELECT field according to selected country and city will auto populate according to selected state.
-Version: 2.8.0
+Version: 2.8.1
 Author: Trusty Plugins
 Author URI: https://trustyplugins.com
-License: GPL3
-License URI: http://www.gnu.org/licenses/gpl.html
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Domain Path: /languages
 Text Domain: tc_csca
  */
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'TC_CSCA_VERSION' ) ) {
-	define( 'TC_CSCA_VERSION', '2.8.0' );
+	define( 'TC_CSCA_VERSION', '2.8.1' );
 }
 
 class TC_CSCA_Plugin {
@@ -59,25 +59,40 @@ class TC_CSCA_Plugin {
 		if ( ! class_exists( 'TC_CSCA_DB' ) ) {
 			return;
 		}
-		if ( TC_CSCA_DB::is_healthy() ) {
+
+		$url = admin_url( 'options-general.php?page=tc-csca-patch-setting' );
+
+		if ( ! TC_CSCA_DB::is_healthy() ) {
+			$counts = TC_CSCA_DB::get_counts();
+			printf(
+				'<div class="notice notice-warning"><p>%s</p></div>',
+				wp_kses_post(
+					sprintf(
+						/* translators: 1: countries count 2: states count 3: cities count 4: settings URL */
+						__( '<strong>Country State City Dropdown CF7:</strong> Location data looks incomplete (Countries: %1$d, States: %2$d, Cities: %3$d). Existing forms may show empty lists. You can reinstall data from <a href="%4$s">Settings → Country State City Dropdown</a> without changing your form tags.', 'tc_csca' ),
+						(int) $counts['countries'],
+						(int) $counts['state'],
+						(int) $counts['city'],
+						esc_url( $url )
+					)
+				)
+			);
 			return;
 		}
 
-		$counts = TC_CSCA_DB::get_counts();
-		$url    = admin_url( 'options-general.php?page=tc-csca-patch-setting' );
-		printf(
-			'<div class="notice notice-warning"><p>%s</p></div>',
-			wp_kses_post(
-				sprintf(
-					/* translators: 1: countries count 2: states count 3: cities count 4: settings URL */
-					__( '<strong>Country State City Dropdown CF7:</strong> Location data looks incomplete (Countries: %1$d, States: %2$d, Cities: %3$d). Existing forms may show empty lists. You can reinstall data from <a href="%4$s">Settings → Country State City Dropdown</a> without changing your form tags.', 'tc_csca' ),
-					(int) $counts['countries'],
-					(int) $counts['state'],
-					(int) $counts['city'],
-					esc_url( $url )
+		if ( get_option( 'tc_csca_data_update_available' ) && ! TC_CSCA_DB::is_data_current() ) {
+			printf(
+				'<div class="notice notice-info"><p>%s</p></div>',
+				wp_kses_post(
+					sprintf(
+						/* translators: 1: new data version 2: settings URL */
+						__( '<strong>Country State City Dropdown CF7:</strong> A newer world location dataset (%1$s) is available (includes West Bengal, Ladakh, and ~12k more cities). <a href="%2$s"><strong>Update to latest dataset</strong></a>.', 'tc_csca' ),
+						esc_html( TC_CSCA_DB::DATA_VERSION ),
+						esc_url( $url )
+					)
 				)
-			)
-		);
+			);
+		}
 	}
 
 	public function tc_plugin_constants() {
@@ -118,7 +133,7 @@ function tc_create_db() {
 		define( 'TC_CSCA_PATH', plugin_dir_path( __FILE__ ) );
 	}
 	if ( ! defined( 'TC_CSCA_VERSION' ) ) {
-		define( 'TC_CSCA_VERSION', '2.8.0' );
+		define( 'TC_CSCA_VERSION', '2.8.1' );
 	}
 
 	require_once TC_CSCA_PATH . 'includes/class-tc-csca-db.php';
@@ -129,6 +144,8 @@ function tc_create_db() {
 	$seeded = false;
 	if ( ! TC_CSCA_DB::is_healthy() ) {
 		$seeded = TC_CSCA_DB::seed_data();
+	} elseif ( ! TC_CSCA_DB::is_data_current() ) {
+		update_option( 'tc_csca_data_update_available', '1' );
 	}
 
 	update_option( 'tc_auto_plugin', 'activated' );
@@ -138,8 +155,8 @@ function tc_create_db() {
 	$notices   = get_option( 'tc_auto_plugin_admin_notices', array() );
 	$notices   = is_array( $notices ) ? $notices : array();
 	$notices[] = $seeded
-		? __( 'Country State City Dropdown CF7 is ready. Add the Country, State, and City tags in your Contact Form 7 form.', 'tc_csca' )
-		: __( 'Country State City Dropdown CF7 updated. Your existing location data and form tags were kept as-is.', 'tc_csca' );
+		? __( 'Country State City Dropdown CF7 is ready with the July 2026 world dataset. Add the Country, State, and City tags in your Contact Form 7 form.', 'tc_csca' )
+		: __( 'Country State City Dropdown CF7 updated. Your existing location tables were kept. Open Settings → Country State City Dropdown to load the latest dataset if needed.', 'tc_csca' );
 	update_option( 'tc_auto_plugin_admin_notices', $notices );
 }
 

@@ -3,8 +3,8 @@ Contributors: TrustyPlugins
 Donate link: https://trustyplugins.com/
 Tags: country dropdown,states,contact form 7,forms,cities
 Requires at least: 4.8
-Tested up to: 6.8
-Stable tag: 2.8.0
+Tested up to: 7.0
+Stable tag: 2.8.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -79,7 +79,11 @@ All Cities will display automatically according to selected country and state fr
 
 = Will updating delete my data? =
 
-No. Updates keep your existing country/state/city tables and form tags. Settings → Country State City Dropdown shows data health and optional repair tools.
+No. Plugin updates keep your existing country/state/city tables and form tags. To load the newer world dataset (2.8.1+), use Settings → Country State City Dropdown → “Update to latest dataset” (optional; replaces location rows only).
+
+= Where does the country / state / city data come from? =
+
+Location lists are based on the open [countries-states-cities-database](https://github.com/dr5hn/countries-states-cities-database) project, licensed under the Open Database License (ODbL). See that project for full attribution and share-alike terms.
 
 = Dropdowns are empty after install =
 
@@ -94,6 +98,13 @@ Go to Settings → Country State City Dropdown and use “Install missing data�
 
 
 == Changelog ==
+= 2.8.1 =
+* World location dataset refreshed (dr5hn CSC): 250 countries, 5,308 states, 152,970 cities
+* India: West Bengal and Ladakh included in seed (no Patch required for new data)
+* Settings: “Update to latest dataset” for existing sites (opt-in replace)
+* Data attribution: Open Database License (ODbL) — countries-states-cities-database
+* Admin notice when a newer geography pack is available
+
 = 2.8.0 =
 * Safer upgrades for existing sites: never re-seeds or renames tables when data already exists
 * Adds database indexes for faster state/city AJAX
@@ -157,5 +168,7 @@ Go to Settings → Country State City Dropdown and use “Install missing data�
 * First version of plugin.
 
 == Upgrade Notice ==
+= 2.8.1 =
+Updated world location dataset (250 / 5,308 / 152,970). Existing tables kept until you click “Update to latest dataset”. Includes West Bengal & Ladakh.
 = 2.8.0 =
 Safe upgrade for existing users: keeps your location data and form tags. Adds indexes, AJAX cache, loading states, custom placeholders, and a data health screen under Settings.

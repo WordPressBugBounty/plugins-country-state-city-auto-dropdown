@@ -4,7 +4,7 @@ Donate link: https://trustyplugins.com/
 Tags: country dropdown,states,contact form 7,forms,cities
 Requires at least: 4.8
 Tested up to: 7.0
-Stable tag: 2.8.1
+Stable tag: 2.8.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -98,6 +98,9 @@ Go to Settings → Country State City Dropdown and use “Install missing data�
 
 
 == Changelog ==
+= 2.8.2 =
+* Fixed CF7 submit: re-enable state/city dropdowns before submit so selected values are included in the form POST
+
 = 2.8.1 =
 * World location dataset refreshed (dr5hn CSC): 250 countries, 5,308 states, 152,970 cities
 * India: West Bengal and Ladakh included in seed (no Patch required for new data)
@@ -168,6 +171,8 @@ Go to Settings → Country State City Dropdown and use “Install missing data�
 * First version of plugin.
 
 == Upgrade Notice ==
+= 2.8.2 =
+Fixes state/city values missing on Contact Form 7 submit when dependent dropdowns were disabled.
 = 2.8.1 =
 Updated world location dataset (250 / 5,308 / 152,970). Existing tables kept until you click “Update to latest dataset”. Includes West Bengal & Ladakh.
 = 2.8.0 =

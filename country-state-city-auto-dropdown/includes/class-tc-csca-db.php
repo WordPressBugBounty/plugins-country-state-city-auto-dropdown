@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class TC_CSCA_DB {
 
-	const DB_VERSION   = '2.8.1';
+	const DB_VERSION   = '2.8.2';
 	const DATA_VERSION = '2026.07.1';
 
 	/**

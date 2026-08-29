@@ -2,7 +2,7 @@
 /*
 Plugin Name: Country State City Dropdown CF7
 Description: Add country, state and city auto drop down for CONTACT FORM 7. State will auto populate in SELECT field according to selected country and city will auto populate according to selected state.
-Version: 2.8.1
+Version: 2.8.2
 Author: Trusty Plugins
 Author URI: https://trustyplugins.com
 License: GPLv2 or later
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'TC_CSCA_VERSION' ) ) {
-	define( 'TC_CSCA_VERSION', '2.8.1' );
+	define( 'TC_CSCA_VERSION', '2.8.2' );
 }
 
 class TC_CSCA_Plugin {
@@ -133,7 +133,7 @@ function tc_create_db() {
 		define( 'TC_CSCA_PATH', plugin_dir_path( __FILE__ ) );
 	}
 	if ( ! defined( 'TC_CSCA_VERSION' ) ) {
-		define( 'TC_CSCA_VERSION', '2.8.1' );
+		define( 'TC_CSCA_VERSION', '2.8.2' );
 	}
 
 	require_once TC_CSCA_PATH . 'includes/class-tc-csca-db.php';

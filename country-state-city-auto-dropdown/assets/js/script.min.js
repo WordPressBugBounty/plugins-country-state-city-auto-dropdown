@@ -197,13 +197,13 @@ jQuery(function ($) {
 	});
 
 	// Disabled fields are omitted from submit — re-enable so CF7 still receives values.
-	function reenableDependent($form) {
+	function reenableDependent(form) {
 		$(form).find("select.state_auto, select.city_auto").prop("disabled", false);
 	}
 	$(document).on("submit", "form.wpcf7-form", function () {
 		reenableDependent(this);
 	});
-	$(document).on("wpcf7beforesubmit", function (e) {
-		reenableDependent(e.target);
+	$(document).on("wpcf7beforesubmit", "form.wpcf7-form", function () {
+		reenableDependent(this);
 	});
 });
